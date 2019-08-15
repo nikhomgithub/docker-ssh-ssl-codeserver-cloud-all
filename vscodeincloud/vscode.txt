@@ -1,0 +1,115 @@
+User VScode in cloud to make it easy to 
+use high speed server capacity
+to develop project and test project
+(cloud server=vultr.com, digitalocean.com, aws.amazon.com)
+
+https://www.youtube.com/watch?v=9Emn2YQNDl0
+
+This project use cloud-server "vultr"
+https://www.vultr.com/?ref=7992714-4F
+
+User vscode on server
+https://github.com/codercom/code-server
+we can run vscode on server with docker
+docker run -it -p 127.0.0.1:8443:8443 -v "${PWD}:/home/coder/project" codercom/code-server --allow-http --no-auth
+or 
+
+
+at server (vult.com)
+login
+server>display new server
+servertype>ubutu
+server size>$10/month
+ssh key>add new
+server hostname > use what you want
+deploy now
+install...........take some minute
+
+at our machine(client)   >> see how to set up ssh above
+ssh root@ipaddress
+
+at github
+click code server by download binary(zip) file from https://github.com/cdr/code-server
+select
+code-server1.1156-vsc1.33.1-linux-x64.tar.gz (zip) right click and copy link address
+
+at server (vult.com)
+wget https://github.com/cdr/code-server/releases/download/1.1156-vsc1.33.1/code-server1.1156-vsc1.33.1-linux-x64.tar.gz
+tar xvfz code-server1.1156-vsc1.33.1-linux-x64.tar.gz mean upzipfile (extract)
+cd code-server1.1156-vsc1.33.1-linux-x64
+
+ls
+code-server LICENSE README.md
+mv code-server /bin   mean to move this command to bin in order to run vs from any whare in server
+
+mkdir myapp mean to create folder app
+cd myapp    mean go to myapp folder
+code-server mean to run vscode in myapp folder
+
+vscode will be run on localhost:8443/
+
+
+at chrome our machine(client) 
+ipaddres:8443     mean type this address to use code-server
+at first error page (because chrome is set for https only)
+click advance
+click proceed  
+put password given when install code-server (to prevent outsider to edit our server file )
+
+use code-server 
+you can install theme, extension,live-server,
+install latest nodes in server
+curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
+apt install nodejs    mean we use app install because already have file in machine from curl
+
+
+===========================================================
+Generate a self-signed certificate
+https://github.com/cdr/code-server/blob/master/doc/security/ssl.md
+https://www.youtube.com/watch?v=SJJmoDZ3il8
+https://www.youtube.com/watch?v=XrZxJsKUQR8
+
+concept
+We need a certified server to ensure not fishing site
+We need to encrypt information before sending to server
+
+How it work
+1. generate private key (normally this belong to cirtify body)
+2. generate certificate request + detail information (this belong to our website)
+3. signed certificate + key + expire date (this signed by cetify body and send to our website) 
+
+at server
+1) creqte https key (ssl) 
+mkdir ~/certs && cd ~/certs
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ~/certs/MyKey.key -out ~/certs/MyCertificate.crt
+
+You are about to be asked to enter information that will be incorporated into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value, If you enter '.', the field will be left blank.
+
+-----
+2. create certificate request 
+Country Name (2 letter code) [AU]:US     
+State or Province Name (full name) [Some-State]:TX
+Locality Name (eg, city) []:Austin
+Organization Name (eg, company) [Coder Technologies]:Coder
+Organizational Unit Name (eg, section) []:Docs
+Common Name (e.g. server FQDN or YOUR name) []:hostname.example.com
+Email Address []:admin@example.com
+
+2) go to server 
+At the end of the path to your binary, add the following flags followed by the path to your certificate 
+and key like so. Then press enter to run code-server. 
+
+./code-server --cert=~/certs/MyCertificate.crt --cert-key=~/certs/MyKey.key
+
+
+
+============================================================
+============================================================
+
+
+
+
+

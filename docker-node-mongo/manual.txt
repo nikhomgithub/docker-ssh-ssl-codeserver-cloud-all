@@ -1,0 +1,116 @@
+https://www.youtube.com/watch?v=hP77Rua1E0c
+dockerize node+mongo server
+
+git init
+
+git clone https://github.com/bradtraversy/docker-node-mongo.git
+
+create Dockerfile
+
+    FROM node:10 mean to fix version for stability
+
+    WORKDIR /usr/src/app mean as mention in node container 
+
+    COPY package*.json ./ mean copy all package*.json to replace all package*.json in defalut WORKDIR
+
+    RUN npm install mean afterthat install modules in WORKDIR
+
+    COPY . .  mean copy from all file such as model,view,index,manual.txt 
+
+    EXPOSE 3000 mean port of container
+
+    CMD ["npm", "start"] mean ask container to launch npm start when docker container run
+
+
+
+create docker-compose to create image of  mongo + node app  at the same time
+
+version: '3'
+services:
+  app:
+    container_name: docker-node-mongo
+    restart: always
+    build: .       mean we build this image from Dockerfile (node)
+    ports:
+      - '3000:3000'
+    links:
+      - mongo
+  mongo:
+    container_name: mongo    mean  for mogoose.connect('mongodb://mongo:27017/docker-node-mongo') in index.js
+    restart: always
+    image: mongo             mean we just load image mongo from dockerhub
+    ports:
+      - '27017:27017'        mean mongo defalut ports
+
+
+To run docker-compose
+docker-compose up -d mean this command up = build(image)+up --no-start(container)+start(run container)+in background
+
+
+To check container
+docker container ls -a
+
+To see what inside app
+docker container exec -it dockernodemongo_app bash
+ls -a
+.   .dockerignore  .gitignore  README.md	   index.js    models	     package-lock.json	views
+..  .git	   Dockerfile  docker-compose.yml  manual.txt  node_modules  package.json
+
+check port
+htop
+tcp6       0      0 :::3000                 :::*                    LISTEN     
+tcp6       0      0 :::27017                :::*                    LISTEN 
+
+dock-compose down mean stop and 
+
+exit
+
+------------------------------------------
+next step is to push on digital ocean droplist/server
+
+https://m.do.co/c/5424d440c63a
+
+at our machine (client)
+ssh-keygen -t rsa
+ssh-add ~/.ssh/id_rsa mean to add private key for connect with public key at server
+and copy key to digitalOcean
+
+login digitalOcean with github user account (or create new account)
+need credit card information but not charge until upload app
+select ubuntu+One-click apps(Docker)
+or ubuntu (and install docker yourself)
+choose package 5 $ /month 
+add new SSH key past the above key from client
+change host name of droplist(if need)
+link rigisted domain (if have) with ip address from digitalOcean
+copy ip address
+
+at our machine(client)
+ssh root@ipaddress
+you can access server from our machine (client)
+
+at server digitalOcean
+create ssh key to clone (connect to) github-respo
+ssh-keygen mean to use simple one or ssh-keygen -t rsa
+cat ~/.ssh/id_rsa.pub mean to copy public key for github
+
+at github at user profile (under our image) 
+select Settings 
+select SSH and GPG keys
+past public key from digital ocean server
+
+at server digitalOcean
+git clone "put app respository here"
+now we get app "docker-node-mongo" on server
+cd docker-node-mongo
+docker-compose up -d mean to run container in background on server
+
+
+for SSH 
+see more 
+https://github.com/nikhomgithub/ssh-digitalocean
+https://www.youtube.com/watch?v=hQWRp-FdTpc
+
+for github respo of app
+https://github.com/bradtraversy/docker-node-mongo 
+

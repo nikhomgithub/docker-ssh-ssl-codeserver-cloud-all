@@ -1,0 +1,40 @@
+mysql
+
+download image and start container
+docker container run -d -p 3306:3306 --name mysql --env MYSQL_ROOT_PASSWORD=123456 mysql
+
+stop container
+docker container  stop mysql
+
+stop and remove container 
+docker container rm -f mysql
+
+=============================
+nginx
+
+run container after stop
+docker container exec -it mynginx bash 
+
+cd usr/share/nginx/html mean folder of index.html in nginx
+
+to remove all running container
+docker rm $(docker ps -aq) -f 
+
+to mount pwd of machine to docker folder with -v
+docker container run -d -p 8080:80 -v $(pwd):/usr/share/nginx/html -- name nginx-websit nginx
+
+
+To build image into computer create a dockerFile and use docker imgage build and
+put pwd to WORKDIR of nginx
+
+dockerFile
+FROM nginx:lates 
+WORKDIR /usr/share/nginx/html
+COPY . . 
+docker image build -t nikhom/nginx-website
+
+push image that built to dockerhub
+docker push nikhom/nginx-website 
+docker login
+
+=============================

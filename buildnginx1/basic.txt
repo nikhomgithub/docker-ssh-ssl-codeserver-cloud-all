@@ -1,0 +1,62 @@
+Basic docker command
+create image with Docker file & puch to dockerhub
+
+https://gist.github.com/bradtraversy/89fad226dc058a41b596d586022a9bd3
+docker pull nginx mean to pull nginx image from dockerhub
+
+docker container run -it -p 5000:80 nginx mean to run nginx interactively and map port 80 of nginx to 5000 of machine mean to create container from image (auto pull from dockerhub if no image in system)
+
+https://hub.docker.com mean to searh for all container
+
+docker container ls -a mean to see all container in system 
+
+docker container stop eb18  mean to stop container which id=eb18 is running 
+docker container rm eb18 mean to delete container which id=eb18 from syste
+
+
+nginx
+=====
+docker images mean to see all images in system 
+docker image rm e445 mean to delete images which id=e445 from system
+
+docker container run -d -p 8080:80 --name mynginx nginx mean to run in background 
+docker container exec -it mynginx bash mean to access bash of running container mynginx  
+cd /usr/share/nginx/html mean to access html location
+ls 50x.html index.html mean to see all html file
+
+docker rm $(docker ps -aq) -f  mean to force remove all container $(docker ps -aq)
+
+map $(pwd)
+----------
+To map pwd with /usr/share/nginx/html from nginx container
+-v mean mapping folder
+docker container run -d -p 5000:80 -v $(pwd):/usr/share/nginx/html --name mynginx nginx
+
+create nginx image with modification
+------------------------------------
+Let create our own image base on nginx image with Dockerfile
+
+Dockerfile
+FROM nginx:latest
+WORKDIR /usr/share/nginx/html
+COPY . .
+
+create
+index.html
+about.html
+
+run follwing command (do not forget . at the end)
+(base) nikhom@nikhom-X441UA:~/test/subtest$ docker image build -t nikhomdoc/nginx .
+
+check images built
+docker images
+
+build container from image nikhomdoc/nginx
+docker container run -d -p 8082:80 nikhomdoc/nginx
+
+check at chrome-
+http://localhost:8082
+http://localhost:8082/about.html
+
+now push to dockerhub
+docker push nikhomdoc/nginx

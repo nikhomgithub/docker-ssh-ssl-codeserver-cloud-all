@@ -1,30 +1,45 @@
 https://gist.github.com/bradtraversy/89fad226dc058a41b596d586022a9bd3 docker info docker version
 
-docker container run -it -p 5000:80 nginx mean to run nginx interactively and map port 80 of nginx to 5000 of machine mean to create container from image (auto pull from dockerhub if no image in system)
+docker container run -it -p 5000:80 nginx 
+ mean to run nginx interactively and map port 80 of nginx to 5000 of machine 
+ mean to create container from image (auto pull from dockerhub if no image in system)
 
 docker pull nginx mean to pull nginx from dockerhub
 
 https://hub.docker.com
 to search for all container
 
-docker container ls -a mean to see all container in system docker container stop eb18 mean to stop container which is running docker container rm eb18 mean to delete container from syste
+docker container ls -a mean to see all container in system 
+docker container stop eb18 
+ mean to stop container which is running 
+docker container rm eb18 
+ mean to delete container from syste
 
-docker images mean to see all images in system docker image rm e445 mean to delete images from system
+docker images mean to see all images in system 
+docker image rm e445 mean to delete images from system
 
-docker container run -d -p 8080:80 --name mynginx nginx mean to run in background docker container exec -it mynginx bash mean to access to file/folder in container cd /usr/share/nginx/html ls 50x.html index.html
+docker container run -d -p 8080:80 --name mynginx nginx mean to run in background 
+docker container exec -it mynginx bash mean to access to file/folder in container 
+  cd /usr/share/nginx/html ls 50x.html index.html
 
 docker rm $(docker ps -aq) -f mean delete all container in system
 
-To change index.html into docker /usr/share/nginx/html docker container run -d -p 5000:80 -v $(pwd):/usr/share/nginx/html --name mynginx nginx
+To change index.html in docker /usr/share/nginx/html 
+docker container run -d -p 5000:80 -v $(pwd):/usr/share/nginx/html --name mynginx nginx
 
-now we use our pwd as html folder (map folder) createa a new index.html in our pwd it will replace /usr/share/nginx/html/index.html or creat about.html and access by localhost:5000/about.html
+now we use our pwd as html folder (map folder) create a new index.html in our pwd 
+it will replace /usr/share/nginx/html/index.html 
+and creat about.html and access by localhost:5000/about.html
 
-instead to map folder in real machine to docker folder we can create our image by putting our folder into docker defalut folder and run container from that image
+instead to map folder in real machine to docker folder 
+we can create our image by putting our folder into docker defalut folder 
+and run container from that image
 
-Let create our own image base on nginx
-Create Dockerfile with 3 lines FROM nginx:latest mean use nginx latest version as based image
+Let create our own image base on nginx image 
+Create Dockerfile with 3 lines 
+FROM nginx:latest    mean use nginx latest version as based image
 
-WORKDIR /usr/share/nginx/html mean folder to be replaced in docker
+WORKDIR /usr/share/nginx/html    mean folder to be replaced in docker
 
 COPY . . mean to copy from these pwd folder to WORKDIR
 
@@ -32,29 +47,55 @@ now create an image with "build"
 
 (base) nikhom@nikhom-X441UA:~/test/subtest$ docker image build -t nikhomdoc/mynginx .
 
-you get a new image on docker name = nikhomdoc/mynginx in the machine
+you get a new image on docker name = nikhomdoc/mynginx  in the machine
 
-let use it (base) nikhom@nikhom-X441UA:~/test/subtest$ docker container run -d -p 5000:80 --name newnginx nikhomdoc/mynginx CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES ca94ff87f34e nikhomdoc/mynginx "nginx -g 'daemon of…" 8 seconds ago Up 5 seconds 0.0.0.0:5000->80/tcp newnginx
+let use it 
+(base) nikhom@nikhom-X441UA:~/test/subtest$ docker container run -d -p 5000:80 --name newnginx nikhomdoc/mynginx 
+CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES 
+ca94ff87f34e nikhomdoc/mynginx "nginx -g 'daemon of…" 8 seconds ago Up 5 seconds 0.0.0.0:5000->80/tcp newnginx
 
 we also can push the new image to dockerhub docker login mean to login need to put username and password
 
 docker push nikhomdoc/mynginx
 
-let creaet our node api as image and use mongo image
-create our api with (container) node-express at port 3000 and (container) mongo at port 27107 at node-express connect mogo at 'mongodb://mongo:27017/docker-node-mongo
+let create our nodeJS api as image + use mongo image 
+create our api with (container) node-express at port 3000 and (container) mongo at port 27107 
+at node-express connect mogo at 'mongodb://mongo:27017/docker-node-mongo
 
-create Dockerfile to make image by modified on image node
+create Dockerfile to make our node image by modified  standard image of node
 
-FROM node:10 WORKDIR /usr/src/app COPY package*.json ./ RUN npm install COPY . . EXPOSE 3000 CMD ["npm","start"]
+FROM node:10 
+WORKDIR /usr/src/app 
+COPY package*.json ./ 
+RUN npm install 
+COPY . . 
+EXPOSE 3000 
+CMD ["npm","start"]
 
 create docker-compose.yml to declare that this project use 2 container (1 build+link, 1 image)
 
-version: '3' services: app: container_name: docker-node-mongo restart: always build: . ports: - '80:3000' links: - mongo mongo: container_name: mongo restart: always image: mongo ports: - '27017:27017'
+version: '3' 
 
-//be sure need a space after :" " and -" " run docker by $ docker-compose up
+services: app: 
+container_name: docker-node-mongo restart: 
+always build: . 
+ports: - '80:3000' 
+links: - mongo mongo: 
+
+container_name: mongo 
+restart: always 
+image: mongo 
+ports: - '27017:27017'
+
+//be sure need a space after :" " and -" " 
+run docker by 
+$ docker-compose up
 
 .dockerignore node_modules npm-debug.log
 
-After that $docker-compose up mean to create image and run container images still in system ctrl C mean stop server $docker-compose stop mean to stop $docker-compose start mean to start again
+After that $docker-compose up mean to create image and run container images still in system 
+ctrl C mean stop server 
+$docker-compose stop mean to stop 
+$docker-compose start mean to start again
 
 $docker-compose down mean to stop and destroy comtainer

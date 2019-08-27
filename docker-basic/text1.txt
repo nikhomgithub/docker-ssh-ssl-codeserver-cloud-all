@@ -65,8 +65,8 @@ at node-express connect mogo at 'mongodb://mongo:27017/docker-node-mongo
 create Dockerfile to make our node image by modified  standard image of node
 
 FROM node:10 
-WORKDIR /usr/src/app 
-COPY package*.json ./ 
+WORKDIR /usr/src/app           mean this is the default WORKDIR of node container
+COPY package*.json ./          mean copy package.json & package-lock.json of our project to WORKDIR
 RUN npm install 
 COPY . . 
 EXPOSE 3000 
@@ -76,16 +76,22 @@ create docker-compose.yml to declare that this project use 2 container (1 build+
 
 version: '3' 
 
-services: app: 
-container_name: docker-node-mongo restart: 
-always build: . 
-ports: - '80:3000' 
-links: - mongo mongo: 
-
-container_name: mongo 
-restart: always 
-image: mongo 
-ports: - '27017:27017'
+services: 
+   app: 
+      container_name: docker-node-mongo 
+      restart: always 
+      build: .  
+      ports: 
+         - '80:3000' 
+      links: 
+         - mongo
+         
+   mongo: 
+      container_name: mongo 
+      restart: always 
+      image: mongo 
+      ports: 
+         - '27017:27017'
 
 //be sure need a space after :" " and -" " 
 run docker by 

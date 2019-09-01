@@ -131,6 +131,6 @@ services:
 How to change host name in docker
 #docker run -it -h test.local ubunty bash  //mean hostname to be http://test
 
-
+-------------------------------------------------------
 
 

@@ -1,3 +1,5 @@
+https://dev.to/domysee/setting-up-a-reverse-proxy-with-nginx-and-docker-compose-29jg
+
 Setting up a Reverse-Proxy with Nginx and docker-compose
 
 example docker-compose.yml
@@ -9,15 +11,106 @@ services:
     container_name: production_nginx
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf     
+      - /etc/letsencrypt/:/etc/letsencrypt/       //make permanent file in docker regardless of reboot
     ports:
       - 80:80                //map default port
       - 443:443              //map default port 
     networks:
-      - my-network-name
+      - my-network-name      //connect with the same network  
+    environment:
+      - ENV=development
+      - APPLICATION_URL=http://ismydependencysafe
 
-
-  ismydependencysafe:
+ ismydependencysafe:
     image: ismydependencysafe:latest
     container_name: production_ismydependencysafe
     expose:
       - "80"
+    networks:
+      - my-network-name     //connect with the same network
+
+ networks:
+    my-network-name:       //the common network (actually,no need to declare networks, because only 1 network here)
+    
+    ===========================================
+    ===========================================
+docker-compose.yml
+
+version: '3'
+services:
+  nginx: 
+    image: nginx:latest
+    container_name: production_nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/error.log:/etc/nginx/error_log.log
+      - ./nginx/cache/:/etc/nginx/cache
+      - /etc/letsencrypt/:/etc/letsencrypt/
+    ports:
+      - 80:80
+      - 443:443
+
+  your_app_1:
+    image: your_app_1_image:latest
+    container_name: your_app_1
+    expose:
+      - "80"
+
+  your_app_2:
+    image: your_app_2_image:latest
+    container_name: your_app_2
+    expose:
+      - "80"
+
+  your_app_3:
+    image: your_app_3_image:latest
+    container_name: your_app_3
+    expose:
+      - "80"
+nginx.conf
+
+events {
+
+}
+
+http {
+  error_log /etc/nginx/error_log.log warn;
+  client_max_body_size 20m;
+
+  proxy_cache_path /etc/nginx/cache keys_zone=one:500m max_size=1000m;
+
+  server {
+    server_name server1.your.domain;
+
+    location /your_app_1 {
+      proxy_pass http://your_app_1:80;
+      rewrite ^/your_app_1(.*)$ $1 break;
+    }
+
+    location /your_app_2 {
+      proxy_pass http://your_app_2:80;
+      rewrite ^/your_app_2(.*)$ $1 break;
+    }
+  }
+
+  server {
+    server_name server2.your.domain;
+    proxy_cache one;
+    proxy_cache_key $request_method$request_uri;
+    proxy_cache_min_uses 1;
+    proxy_cache_methods GET;
+    proxy_cache_valid 200 1y;
+
+    location / {
+      proxy_pass http://your_app_3:80;
+      rewrite ^/your_app_3(.*)$ $1 break;
+    }
+
+    listen 80;
+    listen 443 ssl;
+    ssl_certificate /etc/letsencrypt/live/server2.your.domain/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/server2.your.domain/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+  }
+}
+    

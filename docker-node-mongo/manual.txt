@@ -114,3 +114,23 @@ https://www.youtube.com/watch?v=hQWRp-FdTpc
 for github respo of app
 https://github.com/bradtraversy/docker-node-mongo 
 
+-----------------------------------------------------
+https://www.youtube.com/watch?v=0Li9kzb_cJk
+How to change docker CLI to dockercompose
+#docker run -p 80:4000 -v $(pwd):/site bradtraversy/jekyll-serve
+
+https://www.youtube.com/watch?v=Kyx2PsuwomE
+services:
+    jekyll:
+        image: bradtraversy/jekell-serve
+        volume:
+            - .:/site
+        port:
+            - '80:4000'
+
+How to change host name in docker
+#docker run -it -h test.local ubunty bash  //mean hostname to be http://test
+
+
+
+

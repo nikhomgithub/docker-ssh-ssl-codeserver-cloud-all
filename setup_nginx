@@ -11,12 +11,12 @@ proxy_pass  to forward to other website
                                                                                          
                                                                       
                                                                  
-
+                                                                                                    upstream
 client == http                                                                                ||==> localhost:8003
             ||                                                                                ||==> localhost:8002
             ||                                                       ====> /api/search        ||==> localhost:8001  
             ||                                                      ||     proxy_pass http://upstreamproject             
-            ||                                      ====> location  ||                       
+            ||                server                ====> location  ||                       
             ||                bestapp.io           ||               ||     /api/find         
             ||          ====> host_name,port=======||                ====> proxy_pass http://localhost:8002
             \/         ||                          ||                                

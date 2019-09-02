@@ -131,3 +131,37 @@ http {
   }
 }
     
+=======================================
+=======================================
+How to serve static content
+//specify port, ip address, host name 
+
+server {
+  listen 80 default_server;     //80 = standard port  
+  server_name www.example.com   //server_name define host_name 
+}
+
+=======================================
+=======================================
+https://www.youtube.com/watch?v=jGHyaBpEn0g
+/etc/nginx 
+
+
+https://www.youtube.com/watch?v=xZrOjmAkFC8
+
+Cache Nginx (To keep most visited site in cache memory zone to quick service by nginx 
+instead of origin server)
+
+Client  ====>  Nginx Cache  ====> origin server 
+  /\              ||                     ||
+  ||              ||                     ||
+  ||              \/                     ||
+   ========== Cache Memory Zone <========
+
+Default :
+  proxy_cache_key$scheme$proxy_host$request_uri;
+  scheme = http or https
+  proxy_hots = mention in upstream 
+  request_uri = full request
+
+

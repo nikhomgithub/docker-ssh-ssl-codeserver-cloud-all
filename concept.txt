@@ -1,0 +1,6 @@
+
+Docker File
+  => to create  Image base on other image
+  
+Docker Compose
+  => to run docker as command line

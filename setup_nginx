@@ -2,6 +2,9 @@ https://dev.to/domysee/setting-up-a-reverse-proxy-with-nginx-and-docker-compose-
 
 Setting up a Reverse-Proxy with Nginx and docker-compose
 
+============================================
+============================================
+============================================
 example docker-compose.yml
 
 version: '3'
@@ -17,9 +20,11 @@ services:
       - 443:443              //map default port 
     networks:
       - my-network-name      //connect with the same network  
+    env_file:
+      - ./common.env         //The environment file, format is VAR=VAL, one variable on each line.
     environment:
       - ENV=development
-      - APPLICATION_URL=http://ismydependencysafe
+      - APPLICATION_URL=http://ismydependencysafe    //in the same network, just use name of service as URL
 
  ismydependencysafe:
     image: ismydependencysafe:latest
@@ -32,8 +37,13 @@ services:
  networks:
     my-network-name:       //the common network (actually,no need to declare networks, because only 1 network here)
     
-    ===========================================
-    ===========================================
+===========================================
+===========================================
+docker-compose up -d.
+docker-compose down.
+
+===========================================
+===========================================
 docker-compose.yml
 
 version: '3'
@@ -41,13 +51,13 @@ services:
   nginx: 
     image: nginx:latest
     container_name: production_nginx
-    volumes:
+    volumes:                //1) Mapping a config file to the default Nginx config file at /etc/nginx/nginx.conf
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/error.log:/etc/nginx/error_log.log
-      - ./nginx/cache/:/etc/nginx/cache
-      - /etc/letsencrypt/:/etc/letsencrypt/
+      - ./nginx/cache/:/etc/nginx/cache           //Cache Configuration 
+      - /etc/letsencrypt/:/etc/letsencrypt/    //Make the certificates available to the Nginx
     ports:
-      - 80:80
+      - 80:80               //2) Mapping of the host ports to the container ports
       - 443:443
 
   your_app_1:
@@ -67,8 +77,15 @@ services:
     container_name: your_app_3
     expose:
       - "80"
-nginx.conf
-
+      
+=================================
+=================================
+The Nginx config is organized in contexts such as
+http context, mail context, stream context
+=================================
+=================================
+/etc/nginx/nginx.conf             // 3) The Nginx config
+                                  // Nginx config is assumed to be in the same directory as 
 events {
 
 }
@@ -77,14 +94,14 @@ http {
   error_log /etc/nginx/error_log.log warn;
   client_max_body_size 20m;
 
-  proxy_cache_path /etc/nginx/cache keys_zone=one:500m max_size=1000m;
+  proxy_cache_path /etc/nginx/cache keys_zone=one:500m max_size=1000m;  //add a proxy_cache_path directive
+                                             //defines the local filesystem path
+  server {                                   // name and size of the memory zone.
+    server_name server1.your.domain;  //defined which urls or IP addresses the virtual server responds to
 
-  server {
-    server_name server1.your.domain;
-
-    location /your_app_1 {
-      proxy_pass http://your_app_1:80;
-      rewrite ^/your_app_1(.*)$ $1 break;
+    location /your_app_1 {                //route incoming 
+      proxy_pass http://your_app_1:80;     //proxy_pass sets the new url
+      rewrite ^/your_app_1(.*)$ $1 break;   
     }
 
     location /your_app_2 {
@@ -95,7 +112,7 @@ http {
 
   server {
     server_name server2.your.domain;
-    proxy_cache one;
+    proxy_cache one;                        //context for which responses should be cached, add       
     proxy_cache_key $request_method$request_uri;
     proxy_cache_min_uses 1;
     proxy_cache_methods GET;
@@ -108,7 +125,7 @@ http {
 
     listen 80;
     listen 443 ssl;
-    ssl_certificate /etc/letsencrypt/live/server2.your.domain/fullchain.pem;
+    ssl_certificate /etc/letsencrypt/live/server2.your.domain/fullchain.pem;  //certificate must be defined
     ssl_certificate_key /etc/letsencrypt/live/server2.your.domain/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
   }

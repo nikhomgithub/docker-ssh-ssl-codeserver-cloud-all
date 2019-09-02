@@ -1,0 +1,17 @@
+How nginx processes a request
+
+nginx can serve multiple host
+1. client send request 
+
+server {
+    listen      192.168.1.1:80;
+    server_name example.net www.example.net;
+    ...
+}
+
+server {
+    listen      192.168.1.1:80 default_server;     //come to default, nginx can not find server name 
+    server_name example.org www.example.org;       //Host field in request's header
+    ...
+}
+

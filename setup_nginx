@@ -7,12 +7,19 @@ nginx can serve multiple server (defind by host_name ( or define ip address) als
 root is define static public such as index.html
 
 proxy_pass  to forward to other website 
-                                                                     ====> /api/search 
-                                                                    ||     proxy_pass http://localhost:8001
-                                                    ====> location  ||
-                              bestapp.io           ||               ||     /api/find
-                        ====> host_name,port=======||                ====> proxy_pass http://localhost:8002
-                       ||                          ||                                
+
+                                                                                         
+                                                                      
+                                                                 
+
+client == http                                                                                ||==> localhost:8003
+            ||                                                                                ||==> localhost:8002
+            ||                                                       ====> /api/search        ||==> localhost:8001  
+            ||                                                      ||     proxy_pass http://upstreamproject             
+            ||                                      ====> location  ||                       
+            ||                bestapp.io           ||               ||     /api/find         
+            ||          ====> host_name,port=======||                ====> proxy_pass http://localhost:8002
+            \/         ||                          ||                                
 clients > https> nginx ||                           ====> root (static public /home/nikhom/index.html)
             bestapp.io || (DNS=>droplet in digital Ocean)                               
            nanogram.io || (DNS=>...

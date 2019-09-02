@@ -13,10 +13,10 @@ proxy_pass  to forward to other website
                               bestapp.io           ||               ||     /api/find
                         ====> host_name,port=======||                ====> proxy_pass http://localhost:8002
                        ||                          ||                                
-many clients ==> nginx ||                           ====> root (static public /home/nikhom/index.html)
+clients > https> nginx ||                           ====> root (static public /home/nikhom/index.html)
             bestapp.io || (DNS=>droplet in digital Ocean)                               
            nanogram.io || (DNS=>...
-    (162.123.54.56:80) ||          
+   (162.123.54.56:443) ||          
                         ====> host_name,port ====== same as above 
                               nanogram.io  
                         

@@ -1,9 +1,28 @@
 https://dev.to/domysee/setting-up-a-reverse-proxy-with-nginx-and-docker-compose-29jg
 
-Setting up a Reverse-Proxy with Nginx and docker-compose
+============================================
+============================================
+nginx can serve multiple server (defind by host_name ( or define ip address) also can define port 
+
+root is define static public such as index.html
+
+proxy_pass  to forward to other website 
+                                                                     ====> /api/search 
+                                                                    ||     proxy_pass http://localhost:8001
+                                                    ====> location  ||
+                              bestapp.io           ||               ||     /api/find
+                        ====> host_name,port=======||                ====> proxy_pass http://localhost:8002
+                       ||                          ||                                
+many clients ==> nginx ||                           ====> root (static public /home/nikhom/index.html)
+            bestapp.io || (DNS=>droplet in digital Ocean)                               
+           nanogram.io || (DNS=>...
+    (162.123.54.56:80) ||          
+                        ====> host_name,port ====== same as above 
+                              nanogram.io  
+                        
 
 ============================================
-============================================
+Setting up a Reverse-Proxy with Nginx and docker-compose
 ============================================
 example docker-compose.yml
 

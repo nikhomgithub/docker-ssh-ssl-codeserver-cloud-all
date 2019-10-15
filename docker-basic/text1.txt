@@ -67,12 +67,15 @@ $docker push nikhomdoc/mynginx
 $docker login
 
 ==============================================
+==============================================
+==============================================
+create image 
+-----------
 let create our nodeJS api as image + use mongo image 
 create our api with (container) node-express at port 3000 and (container) mongo at port 27107 
-at node-express connect mogo at 'mongodb://mongo:27017/docker-node-mongo
+at node-express connect mongo at 'mongodb://mongo:27017/docker-node-mongo
 
 create Dockerfile to make our node image by modified  standard image of node
-
 
 FROM node:10 
 WORKDIR /usr/src/app           mean this is the default WORKDIR of node container
@@ -81,6 +84,7 @@ RUN npm install
 COPY . . 
 EXPOSE 3000 
 CMD ["npm","start"]
+
 
 create docker-compose.yml to declare that this project use 2 container (1 build+link, 1 image)
 

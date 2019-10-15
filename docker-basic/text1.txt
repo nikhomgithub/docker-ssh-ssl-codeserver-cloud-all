@@ -35,19 +35,30 @@ instead to map folder in real machine to docker folder
 we can create our image by putting our folder into docker defalut folder 
 and run container from that image
 
+
+
+
 Let create our own image base on nginx image 
 Create Dockerfile with 3 lines 
-FROM nginx:latest    mean use nginx latest version as based image
+FROM nginx:latest           mean use nginx latest version as based image
 
-WORKDIR /usr/share/nginx/html    mean folder to be replaced in docker
+WORKDIR /usr/share/nginx/html            mean folder to be replaced in docker of nginx 
 
 COPY . . mean to copy from these pwd folder to WORKDIR
 
-now create an image with "build"
 
-(base) nikhom@nikhom-X441UA:~/test/subtest$ docker image build -t nikhomdoc/mynginx .
 
-you get a new image on docker name = nikhomdoc/mynginx  in the machine
+====================================
+now create an image with "build" and save in docker-hub  
+(nikhomdoc is account)
+(mynginx-mee is name of our image) 
+
+
+
+
+(base) nikhom@nikhom-X441UA:~/test/subtest$ docker image build -t nikhomdoc/mynginx-mee .
+
+you get a new image on docker name = nikhomdoc/mynginx-mee  in the machine
 
 let use it 
 (base) nikhom@nikhom-X441UA:~/test/subtest$ docker container run -d -p 5000:80 --name newnginx nikhomdoc/mynginx 

@@ -50,15 +50,10 @@ COPY . . mean to copy from these pwd folder to WORKDIR
 
 ====================================
 now create an image with "build" and save in docker-hub  
-(nikhomdoc is account)
-(mynginx-mee is name of our image) 
 
+(base) nikhom@nikhom-X441UA:~/test/subtest$ docker image build -t nikhomdoc/mynginx .
 
-
-
-(base) nikhom@nikhom-X441UA:~/test/subtest$ docker image build -t nikhomdoc/mynginx-mee .
-
-you get a new image on docker name = nikhomdoc/mynginx-mee  in the machine
+you get a new image on docker name = nikhomdoc/mynginx  in the machine
 
 let use it 
 (base) nikhom@nikhom-X441UA:~/test/subtest$ docker container run -d -p 5000:80 --name newnginx nikhomdoc/mynginx 
@@ -67,13 +62,17 @@ ca94ff87f34e nikhomdoc/mynginx "nginx -g 'daemon of…" 8 seconds ago Up 5 secon
 
 we also can push the new image to dockerhub docker login mean to login need to put username and password
 
-docker push nikhomdoc/mynginx
+$docker push nikhomdoc/mynginx
 
+$docker login
+
+==============================================
 let create our nodeJS api as image + use mongo image 
 create our api with (container) node-express at port 3000 and (container) mongo at port 27107 
 at node-express connect mogo at 'mongodb://mongo:27017/docker-node-mongo
 
 create Dockerfile to make our node image by modified  standard image of node
+
 
 FROM node:10 
 WORKDIR /usr/src/app           mean this is the default WORKDIR of node container

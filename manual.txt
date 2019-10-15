@@ -15,3 +15,7 @@ $docker images                  //show docker image
 $docker rm id_of_image          //remove docker image
 
 $docker pull nginx              //to pul nginx image from dockerhub
+
+$docker container run -d -p 3306:3306 --name mysql1 --env MYSQL_ROOT_PASSWORD=123456 mysql 
+$docker container stop mysql 
+$docker container remove mysql -f  //force to remove

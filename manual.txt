@@ -1,0 +1,17 @@
+$docker version   //docker server run behind 
+$docker info   
+//default port of nginx = 80 
+//8080 port is expose to outside 
+//dockerhub have all information about all std container 
+
+$docker container run -it -p 8080:80 nginx 
+//normal docker will try to find nginx container from locally, 
+//if not found, go to search on dockerhub 
+
+$docker container ls            //show active container
+$docker container ls -a         //show all container active/inactive
+$docker container rm id_of_docker    //remove docker container 
+$docker images                  //show docker image
+$docker rm id_of_image          //remove docker image
+
+$docker pull nginx              //to pul nginx image from dockerhub

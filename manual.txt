@@ -1,3 +1,5 @@
+https://www.youtube.com/watch?v=Kyx2PsuwomE
+
 =====================
 see docker version/info
 $docker version   //docker server run behind 
@@ -5,8 +7,6 @@ $docker info
 //default port of nginx = 80 
 //8080 port is expose to outside 
 //dockerhub have all information about all std container 
-
-
 
 ======================
 see container
@@ -54,10 +54,136 @@ $docker container exec -it mynginx bash
 //bash mean to run nginx with bash shell can go into nginx which is debian base linux
 
 =======================
-modify container with our filw (pwd)
+build & push image with our file (pwd)
 
 $docker container run -d -p 8080:80 -v $(pwd):/usr/share/nginx/html --name my-nginx nginx
 //-v mean use our folder in stead of default nginx html folder
+
+DockerFile
+
+FROM nginx:latest
+
+WORKDIR /usr/share/nginx/html
+
+COPY . .                             //copy from all hear to all there WORKDIR
+
+
+$docker image build -t nikhomaccount/my-nginx-server .
+//to build docker hub in to local machine 
+//. mean docker File in this foloder
+//nikhomaccount mean account register with dockerhub
+
+$docker push nikhomaccount/my-nginx-server
+$docker lign              //dockerhub ask for password
+//to push this image on to docker hub with nikhomaccount 
+
+==========================================================
+docker compose basic
+
+docker run -p 80:4000 -v $(pwd):/site nikhom/my-server-app
+  /\
+  ||
+  ||
+  \/
+  
+version :'2'  
+services:
+  app:
+    image: nikhom/my-server-app
+    volumes:
+      - .:site
+    ports:
+      - '80:4000'
+======================
+To run
+docker-compose up
+or
+docker-compose up -d  //-d run in daemon
+//run all docker container in compose and create network between them
+
+
+To clear
+docker-compose down
+===========================================================
+File 
+
+.dockerignore
+node_modules
+npm-debug.log
+
+===========================================================
+https://www.youtube.com/watch?v=hP77Rua1E0c
+
+we have
+node app <=======> mongodb
+                'mongodb://mongo:27017/docker-node-mongo'
+app.listen(3000,()=>{})
+
+DockerFile                        //for docker node app
+
+FROM node:10
+WORKDIR /usr/src/app              //folder of our app in node container
+COPY package*.json ./             //copy package.json, package-log.json to workdir
+RUN npm install                   //install dependency into docker
+COPY . .                          //copy all to workdir except those in .dockerignore
+EXPOSE 3000
+CMD npm start
+==================================================
+create file
+
+docker-compose.yml
+
+version:'3'
+services:
+  app:
+    container_name:docker-node-mongo       //give a name --name
+    restart:always                         //if fail restart 
+    build: .                               //look at dockerfile in pwd folder
+    ports:
+      - '80:3000'   
+    links:
+      - mongo
+  mongo:
+    container_name:mongo
+    image:mongo
+    ports:
+      - '27017:27017'
+===============================================
+===============================================
+===============================================
+push project on github
+===============================================
+digitalOcean
+
+create droplet
+select ubunto + docker 
+select size
+add ssh   from ~/.ssh/id_rsa.pub
+copy ip address
+
+at local machine
+  $ssh-add ~/.ssh/id_rsa
+  $ssh root@132.12.12.34
+
+at server   
+  $ssh-keygen
+  $cat ~/.ssh/id_rsa.pub
+  copy key and paste on github  profile>setting>ssh and gpg keys>new ssh key> 
+
+  $git clone git@github.com....................
+  $cd docker-node-mongo
+  $docker-compose up -d
+
+Done 
+//////////////////////////////
+
+
+
+
+
+
+
+
 
 
 

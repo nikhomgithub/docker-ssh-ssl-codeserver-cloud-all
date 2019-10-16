@@ -1,24 +1,70 @@
+=====================
+see docker version/info
 $docker version   //docker server run behind 
 $docker info   
 //default port of nginx = 80 
 //8080 port is expose to outside 
 //dockerhub have all information about all std container 
 
-$docker container run -it -p 8080:80 nginx 
-//normal docker will try to find nginx container from locally, 
-//if not found, go to search on dockerhub 
+
+
+======================
+see container
+$docker ps
+//process mean show all docker container as well
 
 $docker container ls            //show active container
 $docker container ls -a         //show all container active/inactive
+//-a mean all
+//ls mean list 
+
+===================
+delelete container 
 $docker container rm id_of_docker    //remove docker container 
+
+//remove all container (active/inactive) 
+$docker rm $(docker ps -aq) -f
+====================
+see image 
 $docker images                  //show docker image
+
+====================
+delete image
 $docker rm id_of_image          //remove docker image
 
+=====================
+pull image+run container 
 $docker pull nginx              //to pul nginx image from dockerhub
+$docker container run -it -p 8080:80 nginx 
+//normal docker will try to find nginx container from locally, 
+//if not found, go to search on dockerhub 
+//-p mean port external:default
+//-it mean interact mode
 
 $docker container run -d -p 3306:3306 --name mysql1 --env MYSQL_ROOT_PASSWORD=123456 mysql 
+//-d run in daemon or background 
+//--name mean give a name of container 
+//--env mean environment variable
 $docker container stop mysql 
-$docker container remove mysql -f  //force to remove
+$docker container remove mysql -f  
+//-f mean force to remove running container 
 
-remove all container (active/inactive) 
-$docker rm $(docker ps -aq) -f
+$docker container exec -it mynginx bash
+//exec mean execution
+//bash mean to run nginx with bash shell can go into nginx which is debian base linux
+
+=======================
+modify container with our filw (pwd)
+
+$docker container run -d -p 8080:80 -v $(pwd):/usr/share/nginx/html --name my-nginx nginx
+//-v mean use our folder in stead of default nginx html folder
+
+
+
+
+
+
+
+
+
+

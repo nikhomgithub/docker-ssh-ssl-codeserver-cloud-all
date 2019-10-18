@@ -15,6 +15,10 @@ docker container stop eb18
 docker container rm eb18 
  mean to delete container from syste
 
+docker inspect "dockername"   
+//to see detail of that docker, port, ip address
+
+
 docker images mean to see all images in system 
 docker image rm e445 mean to delete images from system
 

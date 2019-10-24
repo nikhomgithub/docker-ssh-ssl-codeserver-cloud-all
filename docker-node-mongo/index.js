@@ -1,9 +1,10 @@
+const http = require('http');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
 const app = express();
-
+const server = http.createServer(app);
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -35,4 +36,5 @@ app.post('/item/add', (req, res) => {
 
 const port = 3000;
 
-app.listen(port, () => console.log('Server running...'));
+//app.listen(port, () => console.log('Server running...'));
+server.listen(port,'127.0.0.1', () => console.log('Server running...'));
